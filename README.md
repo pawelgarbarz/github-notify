@@ -22,7 +22,7 @@ parameters:
 ## Usage
 run:
 ```shell
-bin/notify get
+bin/github-notify get
 ```
 
 Flags:

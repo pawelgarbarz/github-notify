@@ -1,8 +1,8 @@
 build:
-	go mod tidy && go build -o bin/notify
+	go mod tidy && go build -o bin/github-notify
 
 run:
-	bin/notify get
+	bin/github-notify get
 
 test:
 	go mod tidy && go test ./...

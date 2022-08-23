@@ -3,8 +3,8 @@ package importers
 import (
 	"encoding/json"
 	"fmt"
-	debugPkg "github.com/pawelgarbarz/gh-pr-listener/internal/pkg/debug"
-	"github.com/pawelgarbarz/gh-pr-listener/internal/pkg/models"
+	debugPkg "github.com/pawelgarbarz/github-notify/internal/pkg/debug"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/models"
 )
 
 const pullRequestUrlTemplate = "https://api.github.com/repos/%s/pulls?state=open&sort=created&direction=desc"

@@ -4,7 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/pawelgarbarz/gh-pr-listener/cmd"
+import "github.com/pawelgarbarz/github-notify/cmd"
 
 func main() {
 	cmd.Execute()

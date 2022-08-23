@@ -1,4 +1,4 @@
-module github.com/pawelgarbarz/gh-pr-listener
+module github.com/pawelgarbarz/github-notify
 
 go 1.18
 

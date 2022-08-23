@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/pawelgarbarz/gh-pr-listener/configs"
+	"github.com/pawelgarbarz/github-notify/configs"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -15,7 +15,7 @@ var config configs.Config
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gh-pr-listener",
+	Use:   "github-notify",
 	Short: "Application to interact with github and send notifications to communicators",
 	Long:  `Application to interact with github and send notifications to communicators`,
 	// Uncomment the following line if your bare application
@@ -39,7 +39,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gh-pr-listener.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.github-notify.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -55,11 +55,11 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".gh-pr-listener" (without extension).
+		// Search config in home directory with name ".github-notify.yaml".
 		viper.AddConfigPath(home)
 		viper.AddConfigPath(".") // optionally look for config in the working directory
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".gh-pr-listener")
+		viper.SetConfigName(".github-notify")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

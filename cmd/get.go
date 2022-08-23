@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"github.com/pawelgarbarz/gh-pr-listener/internal/pkg/debug"
-	"github.com/pawelgarbarz/gh-pr-listener/internal/pkg/http"
-	"github.com/pawelgarbarz/gh-pr-listener/internal/pkg/importers"
-	"github.com/pawelgarbarz/gh-pr-listener/internal/pkg/models"
-	notifications "github.com/pawelgarbarz/gh-pr-listener/internal/pkg/notifications/pull_requests"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/debug"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/http"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/importers"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/models"
+	notifications "github.com/pawelgarbarz/github-notify/internal/pkg/notifications/pull_requests"
 	"github.com/spf13/cobra"
 	"log"
 	"strings"

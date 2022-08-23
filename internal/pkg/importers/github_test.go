@@ -1,8 +1,8 @@
 package importers
 
 import (
-	debugPkg "github.com/pawelgarbarz/gh-pr-listener/internal/pkg/debug"
-	"github.com/pawelgarbarz/gh-pr-listener/internal/pkg/models"
+	debugPkg "github.com/pawelgarbarz/github-notify/internal/pkg/debug"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
