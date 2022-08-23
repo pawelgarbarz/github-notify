@@ -85,7 +85,7 @@ func filterByReviewers(pullRequests *models.PullRequestCollection, output map[in
 func init() {
 	rootCmd.AddCommand(getCmd)
 
-	getCmd.Flags().StringVarP(&projectCode, "projectCode", "p", "EMAIL", "jira project code")
-	getCmd.Flags().StringVarP(&repoUrl, "repoUrl", "u", "hometogo/user", "repository brand/name")
+	getCmd.Flags().StringVarP(&projectCode, "projectCode", "p", "JIRA", "jira project code")
+	getCmd.Flags().StringVarP(&repoUrl, "repoUrl", "u", "pawelgarbarz/github-notify", "repository brand/name")
 	getCmd.Flags().IntVarP(&debugLevel, "debugLevel", "d", 0, "debug level 0..3")
 }
