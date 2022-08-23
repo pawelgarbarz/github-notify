@@ -3,3 +3,5 @@ reviewers:
   - github: pawelgarbarz
     slack: garbarz.pawel
 webhook-url: https://hooks.slack.com/some-random-code
+jira-project: JIRA
+github-repo: pawelgarbarz/github-notify

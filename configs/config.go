@@ -4,48 +4,71 @@ import (
 	"errors"
 )
 
-type Config struct {
-	Token         string     `mapstructure:"token"`
-	WebhookURL    string     `mapstructure:"webhook-url"`
-	ReviewersList []Reviewer `mapstructure:"reviewers"`
+var errTokenMissing = errors.New("`token` configuration must be set")
+var errWebhookUrlMissing = errors.New("`webhook-url` configuration must be set")
+var errJiraProjectMissing = errors.New("`jira-project` configuration must be set")
+var errGithubRepoMissing = errors.New("`github-repo` configuration must be set")
+var errGithubLoginNotFound = errors.New("github login not found")
+var errSlackLoginNotFound = errors.New("slack login not found")
+
+type ConfigInterface interface {
+	ValidateConfig() error
+	GithubLoginBySlack(slackLogin string) (string, error)
+	SlackLoginByGithub(githubLogin string) (string, error)
+	Reviewers() []Reviewer
+	GithubToken() string
+	SlackWebhookUrl() string
+	JiraProject() string
+	GithubRepo() string
 }
 
-func NewConfig(token string, webhookURL string, reviewersList []Reviewer) Config {
-	return Config{Token: token, WebhookURL: webhookURL, ReviewersList: reviewersList}
+type Config struct {
+	token         string
+	webhookURL    string
+	reviewersList []Reviewer
+	jiraProject   string
+	githubRepo    string
 }
 
 type Reviewer struct {
-	GhLogin string `mapstructure:"github"`
-	SlLogin string `mapstructure:"slack"`
+	GhLogin string
+	SlLogin string
 }
 
-var errTokenMissing = errors.New("`token` configuration must be set")
-var errWebhookUrlMissing = errors.New("`webhook-url` configuration must be set")
+func NewConfig(token string, webhookURL string, reviewersList []Reviewer, jiraProject string, githubRepo string) ConfigInterface {
+	return &Config{token: token, webhookURL: webhookURL, reviewersList: reviewersList, jiraProject: jiraProject, githubRepo: githubRepo}
+}
 
 func (c Config) ValidateConfig() error {
-	if c.Token == "" {
+	if c.token == "" {
 		return errTokenMissing
 	}
 
-	if c.WebhookURL == "" {
+	if c.webhookURL == "" {
 		return errWebhookUrlMissing
+	}
+
+	if c.jiraProject == "" {
+		return errJiraProjectMissing
+	}
+
+	if c.githubRepo == "" {
+		return errGithubRepoMissing
 	}
 
 	return nil
 }
 
 func (c Config) GithubToken() string {
-	return c.Token
+	return c.token
 }
 
 func (c Config) Reviewers() []Reviewer {
-	return c.ReviewersList
+	return c.reviewersList
 }
 
-var errGithubLoginNotFound = errors.New("github login not found")
-
 func (c Config) SlackLoginByGithub(githubLogin string) (string, error) {
-	for _, reviewer := range c.ReviewersList {
+	for _, reviewer := range c.reviewersList {
 		if githubLogin == reviewer.GithubLogin() {
 			return reviewer.SlackLogin(), nil
 		}
@@ -55,7 +78,7 @@ func (c Config) SlackLoginByGithub(githubLogin string) (string, error) {
 }
 
 func (c Config) GithubLoginBySlack(slackLogin string) (string, error) {
-	for _, reviewer := range c.ReviewersList {
+	for _, reviewer := range c.reviewersList {
 		if slackLogin == reviewer.SlackLogin() {
 			return reviewer.GithubLogin(), nil
 		}
@@ -64,10 +87,16 @@ func (c Config) GithubLoginBySlack(slackLogin string) (string, error) {
 	return slackLogin, errSlackLoginNotFound
 }
 
-var errSlackLoginNotFound = errors.New("slack login not found")
-
 func (c Config) SlackWebhookUrl() string {
-	return c.WebhookURL
+	return c.webhookURL
+}
+
+func (c Config) JiraProject() string {
+	return c.jiraProject
+}
+
+func (c Config) GithubRepo() string {
+	return c.githubRepo
 }
 
 func (r Reviewer) GithubLogin() string {

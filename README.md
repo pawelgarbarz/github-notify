@@ -14,6 +14,8 @@ reviewers:
   - github: pawelgarbarz
     slack: garbarz.pawel
 webhook-url: https://hooks.slack.com/some-random-code
+jira-project: JIRA
+github-repo: pawelgarbarz/github-notify
 ```
 
 parameters:
@@ -21,20 +23,21 @@ parameters:
 - `reviewers` - list of team members who want to be informed about pull requests
   - `github` - user GitHub login
   - `slack` - user Slack login
-- `webhook-url` - slack channel webhook url
+- `webhook-url` - Slack channel webhook url
+- `jira-project` - Jira project code, can be overwritten by parameter  `-p`, `--jira-project`
+- `github-repo` - GitHub repository in format brand/name, can be overwritten by parameter  `-u`, `--github-repo`
 
-## Usage
-run:
+## Run command
 ```shell
-bin/github-notify get
-```
+Usage:
+  github-notify pull-request [flags]
 
 Flags:
-```shell
-Flags:
-  -d, --debugLevel int       debug level 0..3
-  -h, --help                 help for get
-  -p, --projectCode string   jira project code (default "JIRA")
-  -u, --repoUrl string       repository brand/name (default "pawelgarbarz/github-notify")
+  -d, --debugLevel int   debug level 0..3
+  -h, --help             help for pull-request
 
+Global Flags:
+      --config string         config file (default is $HOME/.github-notify.yaml)
+  -u, --github-repo string    github repository brand/name
+  -p, --jira-project string   jira project code
 ```

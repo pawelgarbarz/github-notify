@@ -11,14 +11,12 @@ import (
 	"strings"
 )
 
-var projectCode string
-var repoUrl string
 var debugLevel int
 var notifyList map[int]models.PullRequest
 
-// getCmd represents the get command
-var getCmd = &cobra.Command{
-	Use:   "get",
+// prCmd represents the pr command
+var prCmd = &cobra.Command{
+	Use:   "pull-request",
 	Short: "get pull requests from github",
 	Long: `FilterByCodeAndReviewers github pull requests and find those which titles consists JIRA project name.
 	Than send message to slack channel with details about pending pull requests.`,
@@ -30,13 +28,13 @@ var getCmd = &cobra.Command{
 			return
 		}
 
-		githubClient := http.NewGithubClient(getConfig().Token)
+		githubClient := http.NewGithubClient(getConfig().GithubToken())
 		github := importers.NewGithub(githubClient, debug)
 
 		slackClient := http.NewSlackClient(getConfig().SlackWebhookUrl())
 		sender := notifications.NewSender(slackClient, getConfig(), debug)
 
-		pullRequests, err := github.PullRequests(repoUrl)
+		pullRequests, err := github.PullRequests(getConfig().GithubRepo())
 		if err != nil {
 			log.Fatal(err)
 
@@ -62,7 +60,7 @@ func send(prToNotifyList map[int]models.PullRequest, sender notifications.Notifi
 
 func filterByCode(pullRequests *models.PullRequestCollection, output map[int]models.PullRequest) {
 	for _, pullRequest := range pullRequests.Data {
-		if strings.Contains(strings.ToLower(pullRequest.Title), strings.ToLower(projectCode)) {
+		if strings.Contains(strings.ToLower(pullRequest.Title), strings.ToLower(getConfig().JiraProject())) {
 			if _, exists := output[pullRequest.Number]; !exists {
 				output[pullRequest.Number] = pullRequest
 			}
@@ -83,9 +81,7 @@ func filterByReviewers(pullRequests *models.PullRequestCollection, output map[in
 }
 
 func init() {
-	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(prCmd)
 
-	getCmd.Flags().StringVarP(&projectCode, "projectCode", "p", "JIRA", "jira project code")
-	getCmd.Flags().StringVarP(&repoUrl, "repoUrl", "u", "pawelgarbarz/github-notify", "repository brand/name")
-	getCmd.Flags().IntVarP(&debugLevel, "debugLevel", "d", 0, "debug level 0..3")
+	prCmd.Flags().IntVarP(&debugLevel, "debugLevel", "d", 0, "debug level 0..3")
 }

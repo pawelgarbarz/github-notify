@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var jiraProjectOpt string
+var githubRepoOpt string
 var cfgFile string
-var config configs.Config
+var config configs.ConfigInterface
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -40,6 +42,8 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.github-notify.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&jiraProjectOpt, "jira-project", "p", "", "jira project code")
+	rootCmd.PersistentFlags().StringVarP(&githubRepoOpt, "github-repo", "u", "", "github repository brand/name")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -77,10 +81,22 @@ func initConfig() {
 		log.Fatal(err)
 	}
 
+	jiraProject := viper.GetString("jira-project")
+	if jiraProjectOpt != "" {
+		jiraProject = jiraProjectOpt
+	}
+
+	githubRepo := viper.GetString("github-repo")
+	if githubRepoOpt != "" {
+		githubRepo = githubRepoOpt
+	}
+
 	config = configs.NewConfig(
 		viper.GetString("token"),
 		viper.GetString("webhook-url"),
 		reviewers,
+		jiraProject,
+		githubRepo,
 	)
 
 	if err := config.ValidateConfig(); err != nil {
@@ -88,6 +104,6 @@ func initConfig() {
 	}
 }
 
-func getConfig() configs.Config {
+func getConfig() configs.ConfigInterface {
 	return config
 }

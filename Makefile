@@ -4,6 +4,9 @@ build:
 run:
 	bin/github-notify get
 
+tidy:
+	go mod tidy
+
 test:
 	go mod tidy && go test ./...
 
@@ -24,3 +27,5 @@ staticcheck-install:
 
 staticcheck:
 	staticcheck ./...
+
+ci: tidy fmt vet test lint staticcheck
