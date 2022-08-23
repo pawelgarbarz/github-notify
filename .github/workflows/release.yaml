@@ -1,3 +1,5 @@
+name: Build Release executables
+
 on:
   release:
     types: [created]
