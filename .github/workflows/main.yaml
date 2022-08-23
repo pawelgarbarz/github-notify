@@ -30,13 +30,31 @@ jobs:
           go-version: ${{ matrix.go-version }}
           cache: true
 
+      - name: Verify dependencies
+        run: go mod verify
+
       - name: Install dependencies
         run: go get .
 
       - name: Build
         run: go build -v ./...
 
-      - name: Test
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
+        run: staticcheck ./...
+
+      - name: Install golint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.48.0
+
+      - name: Run golint
+        run: golangci-lint run
+
+      - name: Run tests
         run: go test ./... -json > TestResults-${{ matrix.go-version }}.json
 
       - name: Upload Go test results

@@ -14,7 +14,7 @@ func TestGithub_PullRequests_Get_Error(t *testing.T) {
 
 	result, err := prFetcher.PullRequests("error")
 	assert.Nil(t, result)
-	assert.Equal(t, httpError, err)
+	assert.Equal(t, errHttp, err)
 }
 
 func TestGithub_PullRequests_Fetch(t *testing.T) {

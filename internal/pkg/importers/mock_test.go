@@ -21,7 +21,7 @@ func (_m *githubClientMockInterface) Get(url string) ([]byte, error) {
 	return ret.Get(0).([]byte), nil
 }
 
-var httpError = errors.New("http error")
+var errHttp = errors.New("http error")
 
 func clientMock(expected []byte) githubClient {
 	client := &githubClientMockInterface{}
@@ -30,7 +30,7 @@ func clientMock(expected []byte) githubClient {
 	err := fmt.Sprintf(pullRequestUrlTemplate, "error")
 
 	client.On("Get", ok).Return(expected, nil)
-	client.On("Get", err).Return(nil, httpError.Error())
+	client.On("Get", err).Return(nil, errHttp.Error())
 
 	return client
 }

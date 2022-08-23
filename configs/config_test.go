@@ -14,7 +14,7 @@ func TestConfig_SlackLoginByGithub(t *testing.T) {
 
 	login2, err2 := config.SlackLoginByGithub("not-found")
 	assert.Equal(t, "not-found", login2)
-	assert.Equal(t, githubLoginNotFoundErr, err2)
+	assert.Equal(t, errGithubLoginNotFound, err2)
 }
 
 func TestConfig_GithubLoginByGithub(t *testing.T) {
@@ -26,17 +26,17 @@ func TestConfig_GithubLoginByGithub(t *testing.T) {
 
 	login2, err2 := config.GithubLoginBySlack("not-found")
 	assert.Equal(t, "not-found", login2)
-	assert.Equal(t, slackLoginNotFoundErr, err2)
+	assert.Equal(t, errSlackLoginNotFound, err2)
 }
 
 func TestConfig_ValidateConfig(t *testing.T) {
 	config := NewConfig("", "", nil)
 	err := config.ValidateConfig()
-	assert.Equal(t, tokenMissingError, err)
+	assert.Equal(t, errTokenMissing, err)
 
 	config2 := NewConfig("123token", "", nil)
 	err2 := config2.ValidateConfig()
-	assert.Equal(t, webhookUrlMissingError, err2)
+	assert.Equal(t, errWebhookUrlMissing, err2)
 
 	config3 := NewConfig("123token", "webhook-url", nil)
 	err3 := config3.ValidateConfig()

@@ -18,3 +18,9 @@ lint-install:
 
 lint:
 	golangci-lint run
+
+staticcheck-install:
+	go install honnef.co/go/tools/cmd/staticcheck@latest
+
+staticcheck:
+	staticcheck ./...

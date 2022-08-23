@@ -44,12 +44,12 @@ func configMock() config {
 	return config
 }
 
-var httpError = errors.New("http error")
+var errHttp = errors.New("http error")
 
 func senderClientMock() notificationClient {
 	slackClient := &senderClientMockInterface{}
 
-	slackClient.On("Send", "errorThrown").Return(httpError.Error())
+	slackClient.On("Send", "errorThrown").Return(errHttp.Error())
 	slackClient.On("Send", mock.Anything).Return(nil)
 
 	return slackClient

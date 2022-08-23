@@ -73,7 +73,7 @@ func TestSendWithError(t *testing.T) {
 
 	result := notify.Send("errorThrown")
 
-	assert.Equal(t, fmt.Errorf("pr send error: %s", httpError), result)
+	assert.Equal(t, fmt.Errorf("pr send error: %s", errHttp), result)
 }
 
 func prWithoutReviewers() models.PullRequest {

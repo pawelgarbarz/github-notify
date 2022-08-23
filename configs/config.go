@@ -19,16 +19,16 @@ type Reviewer struct {
 	SlLogin string `mapstructure:"slack"`
 }
 
-var tokenMissingError = errors.New("`token` configuration must be set")
-var webhookUrlMissingError = errors.New("`webhook-url` configuration must be set")
+var errTokenMissing = errors.New("`token` configuration must be set")
+var errWebhookUrlMissing = errors.New("`webhook-url` configuration must be set")
 
 func (c Config) ValidateConfig() error {
 	if c.Token == "" {
-		return tokenMissingError
+		return errTokenMissing
 	}
 
 	if c.WebhookURL == "" {
-		return webhookUrlMissingError
+		return errWebhookUrlMissing
 	}
 
 	return nil
@@ -42,7 +42,7 @@ func (c Config) Reviewers() []Reviewer {
 	return c.ReviewersList
 }
 
-var githubLoginNotFoundErr = errors.New("github login not found")
+var errGithubLoginNotFound = errors.New("github login not found")
 
 func (c Config) SlackLoginByGithub(githubLogin string) (string, error) {
 	for _, reviewer := range c.ReviewersList {
@@ -51,7 +51,7 @@ func (c Config) SlackLoginByGithub(githubLogin string) (string, error) {
 		}
 	}
 
-	return githubLogin, githubLoginNotFoundErr
+	return githubLogin, errGithubLoginNotFound
 }
 
 func (c Config) GithubLoginBySlack(slackLogin string) (string, error) {
@@ -61,10 +61,10 @@ func (c Config) GithubLoginBySlack(slackLogin string) (string, error) {
 		}
 	}
 
-	return slackLogin, slackLoginNotFoundErr
+	return slackLogin, errSlackLoginNotFound
 }
 
-var slackLoginNotFoundErr = errors.New("slack login not found")
+var errSlackLoginNotFound = errors.New("slack login not found")
 
 func (c Config) SlackWebhookUrl() string {
 	return c.WebhookURL
