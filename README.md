@@ -1,5 +1,9 @@
 # github-notify
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/pawelgarbarz/github-notify?style=flat-square)](https://goreportcard.com/report/github.com/pawelgarbarz/github-notify)
+[![Test](https://github.com/pawelgarbarz/github-notify/actions/workflows/main.yaml/badge.svg)](https://github.com/pawelgarbarz/github-notify/actions/workflows/main.yml)
+[![Release](https://img.shields.io/github/release/pawelgarbarz/github-notify.svg?style=flat-square)](https://github.com/pawelgarbarz/github-notify/releases/latest)
+
 This application parse GitHub repository pull requests by title and authors and send notification to Slack channel about pending reviews.
 
 ## Configure
