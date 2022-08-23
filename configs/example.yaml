@@ -1,0 +1,6 @@
+token: ghp_github_token
+reviewers:
+  - github: pawelgarbarz
+    slack: garbarz.pawel
+webhook-url: https://hooks.slack.com/some-random-code
+
