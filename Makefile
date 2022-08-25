@@ -28,4 +28,7 @@ staticcheck-install:
 staticcheck:
 	staticcheck ./...
 
+build-linux:
+	go mod tidy && env GOOS=linux GOARCH=amd64 go build -o bin/github-notify-linux-amd64
+
 ci: tidy fmt vet test lint staticcheck
