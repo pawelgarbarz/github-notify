@@ -21,7 +21,7 @@ func (_m *githubClientMockInterface) Get(url string) ([]byte, error) {
 	return ret.Get(0).([]byte), nil
 }
 
-var errHttp = errors.New("http error")
+var errHttp = errors.New("clients error")
 
 func clientMock(expected []byte) githubClient {
 	client := &githubClientMockInterface{}

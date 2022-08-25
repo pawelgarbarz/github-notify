@@ -3,6 +3,7 @@ module github.com/pawelgarbarz/github-notify
 go 1.18
 
 require (
+	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.7.1

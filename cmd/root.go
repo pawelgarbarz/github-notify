@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/pawelgarbarz/github-notify/configs"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/cache"
+	"github.com/pawelgarbarz/github-notify/internal/pkg/clients"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -14,6 +16,7 @@ var jiraProjectOpt string
 var githubRepoOpt string
 var cfgFile string
 var config configs.ConfigInterface
+var debugLevel int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -45,12 +48,17 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&jiraProjectOpt, "jira-project", "p", "", "jira project code")
 	rootCmd.PersistentFlags().StringVarP(&githubRepoOpt, "github-repo", "u", "", "github repository brand/name")
 
+	rootCmd.PersistentFlags().IntVarP(&debugLevel, "debugLevel", "d", 0, "debug level 0..3")
+
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func initConfig() {
+	viper.SetDefault("cache-enabled", true)
+	viper.SetDefault("cache-ttl", 14400) // 4h = 60 (seconds) * 60 (minutes) * 4 (hours)
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -58,10 +66,12 @@ func initConfig() {
 		// Find home directory.
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
+		cwd, err := os.Getwd()
+		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".github-notify.yaml".
 		viper.AddConfigPath(home)
-		viper.AddConfigPath(".") // optionally look for config in the working directory
+		viper.AddConfigPath(cwd) // optionally look for config in the working directory
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".github-notify")
 	}
@@ -97,6 +107,8 @@ func initConfig() {
 		reviewers,
 		jiraProject,
 		githubRepo,
+		viper.GetBool("cache-enabled"),
+		viper.GetInt("cache-ttl"),
 	)
 
 	if err := config.ValidateConfig(); err != nil {
@@ -106,4 +118,13 @@ func initConfig() {
 
 func getConfig() configs.ConfigInterface {
 	return config
+}
+
+func initCache() cache.Cache {
+	db, err := clients.NewSQLiteClient()
+	if err != nil {
+		log.Fatalf("Cannot create SQL driver: %s", err.Error())
+	}
+
+	return cache.NewCache(db)
 }

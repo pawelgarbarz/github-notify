@@ -2,6 +2,7 @@ package configs
 
 import (
 	"errors"
+	"time"
 )
 
 var errTokenMissing = errors.New("`token` configuration must be set")
@@ -20,6 +21,8 @@ type ConfigInterface interface {
 	SlackWebhookUrl() string
 	JiraProject() string
 	GithubRepo() string
+	CacheEnabled() bool
+	CacheTTL() time.Duration
 }
 
 type Config struct {
@@ -28,6 +31,8 @@ type Config struct {
 	reviewersList []Reviewer
 	jiraProject   string
 	githubRepo    string
+	cacheEnabled  bool
+	cacheTTL      int
 }
 
 type Reviewer struct {
@@ -35,8 +40,8 @@ type Reviewer struct {
 	SlLogin string
 }
 
-func NewConfig(token string, webhookURL string, reviewersList []Reviewer, jiraProject string, githubRepo string) ConfigInterface {
-	return &Config{token: token, webhookURL: webhookURL, reviewersList: reviewersList, jiraProject: jiraProject, githubRepo: githubRepo}
+func NewConfig(token string, webhookURL string, reviewersList []Reviewer, jiraProject string, githubRepo string, cacheEnabled bool, cacheTTL int) ConfigInterface {
+	return &Config{token: token, webhookURL: webhookURL, reviewersList: reviewersList, jiraProject: jiraProject, githubRepo: githubRepo, cacheEnabled: cacheEnabled, cacheTTL: cacheTTL}
 }
 
 func (c Config) ValidateConfig() error {
@@ -105,4 +110,16 @@ func (r Reviewer) GithubLogin() string {
 
 func (r Reviewer) SlackLogin() string {
 	return r.SlLogin
+}
+
+func (c Config) CacheEnabled() bool {
+	return c.cacheEnabled
+}
+
+func (c Config) CacheTTL() time.Duration {
+	if c.cacheTTL > 0 {
+		return time.Second * time.Duration(c.cacheTTL)
+	}
+
+	return 0
 }

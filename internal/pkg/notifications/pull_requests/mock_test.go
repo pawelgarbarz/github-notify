@@ -44,7 +44,7 @@ func configMock() config {
 	return config
 }
 
-var errHttp = errors.New("http error")
+var errHttp = errors.New("clients error")
 
 func senderClientMock() notificationClient {
 	slackClient := &senderClientMockInterface{}

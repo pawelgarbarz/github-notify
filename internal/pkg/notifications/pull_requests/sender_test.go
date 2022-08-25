@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-var expectedMsg = "<http://acme.testing|Pull request> pending for review\n" +
-	">*<http://acme.testing|unit test PR>*\n" +
+var expectedMsg = "<https://acme.testing|Pull request> pending for review\n" +
+	">*<https://acme.testing|unit test PR>*\n" +
 	">Created `0 days 0 hours 0 minutes` ago\n" +
 	">Author: testing-dev"
 
@@ -45,8 +45,8 @@ func TestGetMessageWithSummary(t *testing.T) {
 	pr := prWithoutReviewers()
 	pr.Body = "FirstLine\r\nSecondLine"
 
-	expectedMsg := "<http://acme.testing|Pull request> pending for review\n" +
-		">*<http://acme.testing|unit test PR>*\n" +
+	expectedMsg := "<https://acme.testing|Pull request> pending for review\n" +
+		">*<https://acme.testing|unit test PR>*\n" +
 		">Created `0 days 0 hours 0 minutes` ago\n" +
 		">Author: testing-dev\n" +
 		"> FirstLine\n" +
@@ -78,7 +78,7 @@ func TestSendWithError(t *testing.T) {
 
 func prWithoutReviewers() models.PullRequest {
 	return models.PullRequest{
-		HTMLURL:   "http://acme.testing",
+		HTMLURL:   "https://acme.testing",
 		Title:     "unit test PR",
 		CreatedAt: time.Now(),
 		User: models.User{
