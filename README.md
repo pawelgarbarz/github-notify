@@ -1,7 +1,7 @@
 # github-notify
 ![Coverage](https://img.shields.io/badge/Coverage-100.0%25-brightgreen)
 [![Go Report Card](https://goreportcard.com/badge/github.com/pawelgarbarz/github-notify?style=flat-square)](https://goreportcard.com/report/github.com/pawelgarbarz/github-notify)
-[![CI](https://github.com/pawelgarbarz/github-notify/actions/workflows/main.yaml/badge.svg)](https://github.com/pawelgarbarz/github-notify/actions/workflows/main.yml)
+[![CI](https://github.com/pawelgarbarz/github-notify/actions/workflows/main.yaml/badge.svg)](https://github.com/pawelgarbarz/github-notify/actions/workflows/main.yaml)
 [![CodeQL](https://github.com/pawelgarbarz/github-notify/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/pawelgarbarz/github-notify/actions/workflows/codeql-analysis.yml)
 [![Release](https://img.shields.io/github/release/pawelgarbarz/github-notify.svg?style=flat-square)](https://github.com/pawelgarbarz/github-notify/releases/latest)
 
