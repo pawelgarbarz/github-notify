@@ -53,3 +53,50 @@ func TestGithub_PullRequests_Unmarshall_Error(t *testing.T) {
 	assert.Nil(t, result)
 	assert.Equal(t, "unexpected end of JSON input", err.Error())
 }
+
+func TestGithub_Commits_Get_Error(t *testing.T) {
+	debug := debugPkg.NewDebug()
+	_ = debug.SetLevel(debugPkg.SuperDetailed)
+	prFetcher := NewGithub(clientMock(nil), debug)
+
+	result, err := prFetcher.Commits("error", "main", "pawelgarbarz")
+	assert.Nil(t, result)
+	assert.Equal(t, errHttp, err)
+}
+
+func TestGithub_Commits_Fetch(t *testing.T) {
+	debug := debugPkg.NewDebug()
+	_ = debug.SetLevel(debugPkg.SuperDetailed)
+
+	httpResult := `[{"sha": "testSha"},{"sha": "testSha-2"}]`
+	byteResult := []byte(httpResult)
+
+	commits := []models.Commit{
+		{
+			Sha: "testSha",
+		},
+		{
+			Sha: "testSha-2",
+		},
+	}
+	expected := models.NewCommitCollection(commits)
+
+	prFetcher := NewGithub(clientMock(byteResult), debug)
+
+	result, err := prFetcher.Commits("ok", "main", "pawelgarbarz")
+	assert.Nil(t, err)
+	assert.Equal(t, expected, result)
+}
+func TestGithub_Commits_Unmarshall_Error(t *testing.T) {
+	debug := debugPkg.NewDebug()
+	_ = debug.SetLevel(debugPkg.SuperDetailed)
+
+	httpResult := `[{"html_url..BROKEN...]`
+	byteResult := []byte(httpResult)
+
+	prFetcher := NewGithub(clientMock(byteResult), debug)
+
+	result, err := prFetcher.Commits("ok", "main", "pawelgarbarz")
+	assert.Nil(t, result)
+	assert.Equal(t, "unexpected end of JSON input", err.Error())
+}

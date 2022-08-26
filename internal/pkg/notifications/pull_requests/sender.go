@@ -13,6 +13,7 @@ import (
 type NotificationSender interface {
 	Send(msg string) error
 	PullRequestMessage(pullRequest models.PullRequest) string
+	CommitMessage(pullRequest models.Commit, branch string) string
 }
 
 type sender struct {
@@ -49,7 +50,7 @@ func (s *sender) PullRequestMessage(pullRequest models.PullRequest) string {
 		pullRequest.HTMLURL,
 		pullRequest.HTMLURL,
 		pullRequest.Title,
-		s.calculateAge(pullRequest),
+		s.calculateAge(pullRequest.CreatedAt),
 		s.slackUsername(pullRequest.User.Login),
 	)
 
@@ -73,9 +74,20 @@ func (s *sender) PullRequestMessage(pullRequest models.PullRequest) string {
 	return text
 }
 
-func (s *sender) calculateAge(pullRequest models.PullRequest) string {
+func (s *sender) CommitMessage(commitData models.Commit, branch string) string {
+	return fmt.Sprintf(
+		"A new <%s|commit> have been pushed to %s branch\n>Message: %s\n>Created `%s` ago\n>Author: %s",
+		commitData.HTMLURL,
+		branch,
+		commitData.Commit.Message,
+		s.calculateAge(commitData.Commit.Author.Date),
+		s.slackUsername(commitData.Author.Login),
+	)
+}
+
+func (s *sender) calculateAge(createdAt time.Time) string {
 	now := time.Now()
-	diff := now.Sub(pullRequest.CreatedAt)
+	diff := now.Sub(createdAt)
 
 	days := math.Floor(diff.Hours() / 24)
 	hours := math.Floor(diff.Hours() - (days * 24))

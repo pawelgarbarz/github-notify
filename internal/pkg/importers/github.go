@@ -5,9 +5,11 @@ import (
 	"fmt"
 	debugPkg "github.com/pawelgarbarz/github-notify/internal/pkg/debug"
 	"github.com/pawelgarbarz/github-notify/internal/pkg/models"
+	"time"
 )
 
 const pullRequestUrlTemplate = "https://api.github.com/repos/%s/pulls?state=open&sort=created&direction=desc"
+const commitUrlTemplate = "https://api.github.com/repos/%s/commits?since=%s&per_page=500&page=1&author=%s&sha=%s"
 
 type github struct {
 	githubClient githubClient
@@ -43,4 +45,32 @@ func (g *github) PullRequests(repositoryUrl string) (*models.PullRequestCollecti
 	}
 
 	return models.NewPullRequestCollection(data), nil
+}
+
+func (g *github) Commits(repositoryUrl string, branch string, author string) (*models.CommitCollection, error) {
+	sinceStr := time.Now().AddDate(0, 0, -14).UTC().Format("2006-01-02")
+	url := fmt.Sprintf(commitUrlTemplate, repositoryUrl, sinceStr, author, branch)
+
+	if g.debug.Level() > debugPkg.NoDebug {
+		fmt.Printf("CommitDetails URL: %s \n",
+			url,
+		)
+	}
+
+	responseBody, err := g.githubClient.Get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	if g.debug.Level() >= debugPkg.SuperDetailed {
+		fmt.Printf("Response: %s \n", responseBody)
+	}
+
+	var data []models.Commit
+	err = json.Unmarshal(responseBody, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return models.NewCommitCollection(data), nil
 }

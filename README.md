@@ -17,6 +17,7 @@ reviewers:
 webhook-url: https://hooks.slack.com/some-random-code
 jira-project: JIRA
 github-repo: pawelgarbarz/github-notify
+github-branch: main
 cache-enabled: true
 cache-ttl: 30
 ```
@@ -29,6 +30,7 @@ parameters:
 - `webhook-url` - Slack channel webhook url
 - `jira-project` - Jira project code, can be overwritten by parameter  `-p`, `--jira-project`
 - `github-repo` - GitHub repository in format brand/name, can be overwritten by parameter  `-u`, `--github-repo`
+- `github-branch` - GitHub branch name which is used to monitor for new commits, default `main`
 - `cache-enabled` - Enable/Disable local persistent cache file to store lat send timestamp. Default `true`
 - `cache-ttl` - Time to leave data in cache, set by int number of seconds. Default `14400` which is `4h`
 
@@ -37,11 +39,11 @@ parameters:
   github-notify [command]
 
 Available Commands:
-  cache-clear-all      clear ALL local cache
-  cache-clear-outdated clear outdated local cache
-  completion           Generate the autocompletion script for the specified shell
-  help                 Help about any command
-  pull-request         get pull requests from github
+  cache        clear local cache
+  commit       get commits from github
+  completion   Generate the autocompletion script for the specified shell
+  help         Help about any command
+  pull-request get pull requests from github
 
 Flags:
       --config string         config file (default is $HOME/.github-notify.yaml)

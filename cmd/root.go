@@ -58,6 +58,7 @@ func init() {
 func initConfig() {
 	viper.SetDefault("cache-enabled", true)
 	viper.SetDefault("cache-ttl", 14400) // 4h = 60 (seconds) * 60 (minutes) * 4 (hours)
+	viper.SetDefault("github-branch", "master")
 
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -109,6 +110,7 @@ func initConfig() {
 		githubRepo,
 		viper.GetBool("cache-enabled"),
 		viper.GetInt("cache-ttl"),
+		viper.GetString("github-branch"),
 	)
 
 	if err := config.ValidateConfig(); err != nil {

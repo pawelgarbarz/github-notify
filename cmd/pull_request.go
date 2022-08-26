@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var notifyList map[int]models.PullRequest
+var notifyPrList map[int]models.PullRequest
 
 // prCmd represents the pr command
 var prCmd = &cobra.Command{
@@ -43,13 +43,13 @@ var prCmd = &cobra.Command{
 			return
 		}
 
-		notifyList = make(map[int]models.PullRequest)
+		notifyPrList = make(map[int]models.PullRequest)
 
 		cache := initCache()
-		filterByCode(pullRequests, notifyList, cache)
-		filterByReviewers(pullRequests, notifyList, cache)
+		filterByCode(pullRequests, notifyPrList, cache)
+		filterByReviewers(pullRequests, notifyPrList, cache)
 
-		send(notifyList, sender, cache)
+		send(notifyPrList, sender, cache)
 	},
 }
 
@@ -61,7 +61,7 @@ func send(prToNotifyList map[int]models.PullRequest, sender notifications.Notifi
 		}
 
 		value := fmt.Sprintf("SentAt: %s, Medium: Slack", time.Now().UTC().String())
-		err := cache.Save(cacheKey(getConfig().GithubRepo(), pullRequest.Number), value, getConfig().CacheTTL())
+		err := cache.Save(cachePrKey(getConfig().GithubRepo(), pullRequest.Number), value, getConfig().CacheTTL())
 		if err != nil {
 			log.Printf("[Warning] Cache save error: %s", err.Error())
 		}
@@ -72,7 +72,7 @@ func filterByCode(pullRequests *models.PullRequestCollection, output map[int]mod
 	for _, pullRequest := range pullRequests.Data {
 		if strings.Contains(strings.ToLower(pullRequest.Title), strings.ToLower(getConfig().JiraProject())) {
 			if _, exists := output[pullRequest.Number]; !exists {
-				cacheExists, _ := cache.Exists(cacheKey(getConfig().GithubRepo(), pullRequest.Number))
+				cacheExists, _ := cache.Exists(cachePrKey(getConfig().GithubRepo(), pullRequest.Number))
 				if cacheExists {
 					continue
 				}
@@ -88,7 +88,7 @@ func filterByReviewers(pullRequests *models.PullRequestCollection, output map[in
 		for _, reviewer := range getConfig().Reviewers() {
 			if pullRequest.User.Login == reviewer.GithubLogin() {
 				if _, exists := output[pullRequest.Number]; !exists {
-					cacheExists, _ := cache.Exists(cacheKey(getConfig().GithubRepo(), pullRequest.Number))
+					cacheExists, _ := cache.Exists(cachePrKey(getConfig().GithubRepo(), pullRequest.Number))
 					if cacheExists {
 						continue
 					}
@@ -100,7 +100,7 @@ func filterByReviewers(pullRequests *models.PullRequestCollection, output map[in
 	}
 }
 
-func cacheKey(repo string, id int) string {
+func cachePrKey(repo string, id int) string {
 	return fmt.Sprintf("pull-request/%s/%d", repo, id)
 }
 

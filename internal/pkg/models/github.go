@@ -12,6 +12,30 @@ func NewPullRequestCollection(data []PullRequest) *PullRequestCollection {
 	return &PullRequestCollection{Data: data}
 }
 
+type CommitCollection struct {
+	List []Commit
+}
+
+func NewCommitCollection(commitList []Commit) *CommitCollection {
+	return &CommitCollection{List: commitList}
+}
+
+type Commit struct {
+	Sha         string        `json:"sha"`
+	NodeID      string        `json:"node_id"`
+	Commit      CommitDetails `json:"commit"`
+	URL         string        `json:"url"`
+	HTMLURL     string        `json:"html_url"`
+	CommentsURL string        `json:"comments_url"`
+	Author      User          `json:"author"`
+	Committer   User          `json:"committer"`
+	Parents     []struct {
+		Sha     string `json:"sha"`
+		URL     string `json:"url"`
+		HTMLURL string `json:"html_url"`
+	} `json:"parents"`
+}
+
 type PullRequest struct {
 	URL                string        `json:"url"`
 	ID                 int           `json:"id"`
@@ -188,4 +212,28 @@ type Repository struct {
 	OpenIssues               int           `json:"open_issues"`
 	Watchers                 int           `json:"watchers"`
 	DefaultBranch            string        `json:"default_branch"`
+}
+
+type CommitDetails struct {
+	Author    UserShort `json:"author"`
+	Committer UserShort `json:"committer"`
+	Message   string    `json:"message"`
+	Tree      struct {
+		Sha string `json:"sha"`
+		URL string `json:"url"`
+	} `json:"tree"`
+	URL          string `json:"url"`
+	CommentCount int    `json:"comment_count"`
+	Verification struct {
+		Verified  bool        `json:"verified"`
+		Reason    string      `json:"reason"`
+		Signature interface{} `json:"signature"`
+		Payload   interface{} `json:"payload"`
+	} `json:"verification"`
+}
+
+type UserShort struct {
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
+	Date  time.Time `json:"date"`
 }

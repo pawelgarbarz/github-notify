@@ -23,6 +23,7 @@ type ConfigInterface interface {
 	GithubRepo() string
 	CacheEnabled() bool
 	CacheTTL() time.Duration
+	GithubBranch() string
 }
 
 type Config struct {
@@ -33,15 +34,16 @@ type Config struct {
 	githubRepo    string
 	cacheEnabled  bool
 	cacheTTL      int
+	githubBranch  string
 }
 
 type Reviewer struct {
-	GhLogin string
-	SlLogin string
+	GhLogin string `mapstructure:"github"`
+	SlLogin string `mapstructure:"slack"`
 }
 
-func NewConfig(token string, webhookURL string, reviewersList []Reviewer, jiraProject string, githubRepo string, cacheEnabled bool, cacheTTL int) ConfigInterface {
-	return &Config{token: token, webhookURL: webhookURL, reviewersList: reviewersList, jiraProject: jiraProject, githubRepo: githubRepo, cacheEnabled: cacheEnabled, cacheTTL: cacheTTL}
+func NewConfig(token string, webhookURL string, reviewersList []Reviewer, jiraProject string, githubRepo string, cacheEnabled bool, cacheTTL int, githubBranch string) ConfigInterface {
+	return &Config{token: token, webhookURL: webhookURL, reviewersList: reviewersList, jiraProject: jiraProject, githubRepo: githubRepo, cacheEnabled: cacheEnabled, cacheTTL: cacheTTL, githubBranch: githubBranch}
 }
 
 func (c Config) ValidateConfig() error {
@@ -122,4 +124,8 @@ func (c Config) CacheTTL() time.Duration {
 	}
 
 	return 0
+}
+
+func (c Config) GithubBranch() string {
+	return c.githubBranch
 }

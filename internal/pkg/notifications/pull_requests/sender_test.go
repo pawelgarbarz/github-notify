@@ -9,24 +9,29 @@ import (
 	"time"
 )
 
-var expectedMsg = "<https://acme.testing|Pull request> pending for review\n" +
+var expectedPullRequestMsg = "<https://acme.testing|Pull request> pending for review\n" +
 	">*<https://acme.testing|unit test PR>*\n" +
 	">Created `0 days 0 hours 0 minutes` ago\n" +
 	">Author: testing-dev"
+
+var expectedCommitMsg = "A new <https://commit.com|commit> have been pushed to test-branch branch\n" +
+	">Message: test-commit\n" +
+	">Created `1 days 0 hours 0 minutes` ago\n" +
+	">Author: pawelgarbarz"
 
 func TestGetMessageWithoutReviewers(t *testing.T) {
 	debug := debugPkg.NewDebug()
 
 	notify := NewSender(senderClientMock(), configMock(), debug)
 
-	assert.Equal(t, expectedMsg, notify.PullRequestMessage(prWithoutReviewers()))
+	assert.Equal(t, expectedPullRequestMsg, notify.PullRequestMessage(prWithoutReviewers()))
 }
 
 func TestGetMessageWithReviewers(t *testing.T) {
 	debug := debugPkg.NewDebug()
 	notify := NewSender(senderClientMock(), configMock(), debug)
 
-	expectedMsgWithReviewers := expectedMsg + "\n>Reviewers: <@first-sender>, second"
+	expectedMsgWithReviewers := expectedPullRequestMsg + "\n>Reviewers: <@first-sender>, second"
 
 	pr := prWithoutReviewers()
 	pr.RequestedReviewers = []models.User{
@@ -85,4 +90,27 @@ func prWithoutReviewers() models.PullRequest {
 			Login: "testing-dev",
 		},
 	}
+}
+
+func commitModel() models.Commit {
+	return models.Commit{
+		HTMLURL: "https://commit.com",
+		Commit: models.CommitDetails{
+			Message: "test-commit",
+			Author: models.UserShort{
+				Date: time.Now().AddDate(0, 0, -1),
+			},
+		},
+		Author: models.User{
+			Login: "pawelgarbarz",
+		},
+	}
+}
+
+func TestGetCommitMessage(t *testing.T) {
+	debug := debugPkg.NewDebug()
+
+	notify := NewSender(senderClientMock(), configMock(), debug)
+
+	assert.Equal(t, expectedCommitMsg, notify.CommitMessage(commitModel(), "test-branch"))
 }
