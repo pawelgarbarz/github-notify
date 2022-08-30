@@ -81,7 +81,7 @@ func (c *cache) Delete(key string) error {
 }
 
 func (c *cache) ClearOutdated() error {
-	return c.database.Exec("DELETE FROM cache WHERE deleteAt > date('now');")
+	return c.database.Exec("DELETE FROM cache WHERE deleteAt < date('now');")
 }
 
 func (c *cache) ClearAll() error {

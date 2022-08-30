@@ -146,11 +146,11 @@ func TestCache_Get_FoundButShouldBeDeleted_DeleteErr(t *testing.T) {
 	db := newDbMock()
 	instance := NewCache(db)
 
-	customeError := errors.New("custom Error")
+	customError := errors.New("custom Error")
 
 	db.On("IsEmptyResult", nil).Return(false)
 
-	db.On("Exec", "DELETE FROM cache WHERE key=?;", "key").Return(customeError.Error())
+	db.On("Exec", "DELETE FROM cache WHERE key=?;", "key").Return(customError.Error())
 
 	db.
 		On("QueryRow",
@@ -169,7 +169,7 @@ func TestCache_Get_FoundButShouldBeDeleted_DeleteErr(t *testing.T) {
 	val, err := instance.Get("key")
 
 	assert.Equal(t, "", val)
-	assert.Equal(t, customeError, err)
+	assert.Equal(t, customError, err)
 }
 
 func TestCache_Exists(t *testing.T) {
@@ -204,7 +204,7 @@ func TestCache_ClearOutdated(t *testing.T) {
 	db := newDbMock()
 	instance := NewCache(db)
 
-	db.On("Exec", "DELETE FROM cache WHERE deleteAt > date('now');").Return(nil)
+	db.On("Exec", "DELETE FROM cache WHERE deleteAt < date('now');").Return(nil)
 
 	err := instance.ClearOutdated()
 

@@ -5,6 +5,7 @@ import (
 	"github.com/pawelgarbarz/github-notify/configs"
 	"github.com/pawelgarbarz/github-notify/internal/pkg/cache"
 	"github.com/pawelgarbarz/github-notify/internal/pkg/clients"
+	debugPkg "github.com/pawelgarbarz/github-notify/internal/pkg/debug"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -81,7 +82,9 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		_, _ = fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+		if debugLevel > debugPkg.NoDebug {
+			_, _ = fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+		}
 	} else {
 		_, _ = fmt.Fprintln(os.Stderr, "config file not fount, expected in:", viper.ConfigFileUsed())
 	}
