@@ -34,11 +34,17 @@ func clientMock(expected []byte) githubClient {
 	okCommit := fmt.Sprintf(commitUrlTemplate, "ok", sinceStr, "pawelgarbarz", "main")
 	errCommit := fmt.Sprintf(commitUrlTemplate, "error", sinceStr, "pawelgarbarz", "main")
 
+	okPulls := fmt.Sprintf(pullsUrlTemplate, "ok", "testSha")
+	errPulls := fmt.Sprintf(pullsUrlTemplate, "error", "testSha")
+
 	client.On("Get", ok).Return(expected, nil)
 	client.On("Get", err).Return(nil, errHttp.Error())
 
 	client.On("Get", okCommit).Return(expected, nil)
 	client.On("Get", errCommit).Return(nil, errHttp.Error())
+
+	client.On("Get", okPulls).Return(expected, nil)
+	client.On("Get", errPulls).Return(nil, errHttp.Error())
 
 	return client
 }

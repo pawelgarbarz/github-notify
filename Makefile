@@ -2,7 +2,7 @@ build:
 	go mod tidy && go build -o bin/github-notify
 
 run:
-	bin/github-notify get
+	bin/github-notify commit
 
 tidy:
 	go mod tidy

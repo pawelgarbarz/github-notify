@@ -20,7 +20,7 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "get commits from github",
 	Long: `Filter github commits and find those which titles consists JIRA project name.
-	Than send message to slack channel with details about pending pull requests.`,
+	Than send message to slack chanel with details about pending pull requests.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		debug := debug.NewDebug()
 		if err := debug.SetLevel(debugLevel); err != nil {
@@ -48,6 +48,25 @@ var commitCmd = &cobra.Command{
 			for _, commit := range commits.List {
 				cacheExists, _ := cache.Exists(cacheCommitKey(getConfig().GithubRepo(), commit.Sha))
 				if cacheExists {
+					continue
+				}
+
+				pullCommits, err := github.Pulls(getConfig().GithubRepo(), commit.Sha)
+				if err != nil {
+					log.Fatal(err)
+
+					return
+				}
+
+				if len(pullCommits.Data) > 0 { //means that this commit comes from pull request branch
+					// skip commits form PR's
+
+					value := fmt.Sprintf("SaveAt: %s, merge commit", time.Now().UTC().String())
+					err := cache.Save(cacheCommitKey(getConfig().GithubRepo(), commit.Sha), value, commitCacheTTL)
+					if err != nil {
+						log.Printf("[Warning] Cache save error: %s", err.Error())
+					}
+
 					continue
 				}
 
