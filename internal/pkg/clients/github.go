@@ -3,7 +3,6 @@ package clients
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -42,7 +41,7 @@ func (c GithubClient) Get(url string) ([]byte, error) {
 		}
 	}(resp.Body)
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
